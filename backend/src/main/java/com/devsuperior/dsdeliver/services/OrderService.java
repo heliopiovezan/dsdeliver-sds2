@@ -33,21 +33,21 @@ public class OrderService {
 	
 	@Transactional
 	public OrderDTO insert(OrderDTO dto) {
-		
-		/*((Long) null, dto.getAddress(), dto.getLatitude(), dto.getLongitude(),
-		Instant.now(), OrderStatus.PENDING);
-for(ProductDTO p : dto.getProducts()) { 
-	order.getProducts().add(null)
-}*/
-		
-		
-		Order order = new Order(dto.getAddress(), dto.getLatitude(), dto.getLongitude(), Instant.now(), OrderStatus.PENDING);
+ 		Order order = new Order(dto.getAddress(), dto.getLatitude(), dto.getLongitude(),
+ 				Instant.now(), OrderStatus.PENDING);
 		for(ProductDTO p : dto.getProducts()) {
 			Product product = productRepository.getOne(p.getId());
 			order.getProducts().add(product);
 		}
 		order = repository.save(order);
 		return new OrderDTO(order);
+	}
 	
+	@Transactional
+	public OrderDTO setDelivered(long id) {
+		Order order = repository.getOne(id);
+		order.setStatus(OrderStatus.DELIVERED);
+		order = repository.save(order);
+		return new OrderDTO(order);
 	}
 }
